@@ -1,0 +1,47 @@
+# Node.js
+/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+dist/
+tmp/
+
+# Frontend specific
+frontend/node_modules/
+frontend/.env
+frontend/.env.*
+frontend/.expo
+
+# Backend specific
+backend/node_modules/
+backend/.env
+backend/.env.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor and IDE settings
+.idea/
+.vscode/
+*.swp
+
+# Build outputs
+frontend/build/
+backend/build/
+
+# Misc
+*.pid
+*.seed
+*.pid.lock
