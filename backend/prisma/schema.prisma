@@ -12,6 +12,7 @@ model User {
   username    String         @unique
   email       String         @unique
   password    String
+  refreshToken String?
   posts       Post[]
   comments    Comment[]
   likes       Like[]
