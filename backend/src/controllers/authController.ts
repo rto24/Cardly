@@ -38,7 +38,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       data: { refreshToken },
     });
 
-    res.status(200).json({ accessToken, refreshToken });
+    res.status(200).json({ userId: user.id, accessToken, refreshToken });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error });
   }
