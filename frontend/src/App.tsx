@@ -1,20 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native';
+import AppNav from './navigation/AppNav';
+import { AuthProvider } from './context/AuthContext';
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <Text>Trading card social app!</Text>
-      <StatusBar style="auto" />
+    <SafeAreaView style={{ flex: 1 }}>
+      <AuthProvider>
+        <AppNav />
+      </AuthProvider>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
