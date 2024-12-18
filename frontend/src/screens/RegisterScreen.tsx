@@ -14,7 +14,7 @@ const RegisterScreen = ({ navigation }: any) => {
   }
 
   return (
-    <View>
+    <View style={styles.container}>
       <InputField 
         placeholder="Email"
         value={email}
@@ -39,9 +39,17 @@ const RegisterScreen = ({ navigation }: any) => {
         title="Register"
         onPress={handleSignUp}
       />
-
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    justifyContent: "center",
+    marginTop: "auto",
+    marginBottom: "auto"
+  }
+})
 
 export default RegisterScreen;

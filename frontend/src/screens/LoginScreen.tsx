@@ -61,6 +61,8 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     justifyContent: "center",
+    marginTop: "auto",
+    marginBottom: "auto",
   },
   errorText: {
     color: "red",
