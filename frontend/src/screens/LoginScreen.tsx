@@ -5,19 +5,33 @@ import Button from '../components/Button'
 import { loginUser } from '../services/authService'
 import { useAuth } from '../context/AuthContext'
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }: any) => {
   const { setUser } = useAuth();
   const [ email, setEmail ] = useState<string>("");
   const [ password, setPassword ] = useState<string>("");
+  const [ errorMessage, setErrorMessage ] = useState<string | null>(null);
 
   const handleLogin = async () => {
-    const response = await loginUser(email, password);
-    setUser(response.userId);
-    //renavigate to something else like Home
-  }
+    if (!email || !password) {
+      setErrorMessage("Email and password are required.");
+      return;
+    }
+
+    try {
+      const response = await loginUser(email, password);
+      if (!response) {
+        setErrorMessage("Email or password is invalid");
+      } else {
+        setErrorMessage(null);
+        setUser(response.userId);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  };
 
   return (
-    <View>
+    <View style={styles.container}>
       <InputField 
         placeholder="Email"
         value={email}
@@ -33,8 +47,30 @@ const LoginScreen = () => {
         title="Login"
         onPress={handleLogin}
       />
+      <Text style={styles.link} onPress={() => navigation.navigate("Register")}>
+        Don't have an account? Register
+      </Text>
+    {errorMessage && 
+      <Text style={styles.errorText}>{errorMessage}</Text>
+    }
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    justifyContent: "center",
+  },
+  errorText: {
+    color: "red",
+    marginTop: 10,
+    textAlign: "center"
+  },
+  link: {
+    color: "blue",
+    textAlign: "center",
+  }
+});
 
 export default LoginScreen
