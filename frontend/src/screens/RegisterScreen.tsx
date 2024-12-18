@@ -2,15 +2,27 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
+import { registerUser } from "../services/authService";
 
 const RegisterScreen = ({ navigation }: any) => {
-  const [ email, setEmail ] = useState<string>("")
-  const [ username, setUsername ] = useState<string>("")
-  const [ password, setPassword ] = useState<string>("")
-  const [ confirmPassword, setConfirmPassword ] = useState<string>("")
+  const [ email, setEmail ] = useState<string>("");
+  const [ username, setUsername ] = useState<string>("");
+  const [ password, setPassword ] = useState<string>("");
+  const [ confirmPassword, setConfirmPassword ] = useState<string>("");
+  const [ errorMessage, setErrorMessage ] = useState<string | null>(null);
 
-  const handleSignUp = () => {
-    //signup logic
+  const handleSignUp = async () => {
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return;
+    }
+
+    try {
+      const response = await registerUser(email, username, password);
+      setErrorMessage(null)
+    } catch (error: any) {
+      setErrorMessage(error);
+    }
   }
 
   return (
@@ -39,6 +51,9 @@ const RegisterScreen = ({ navigation }: any) => {
         title="Register"
         onPress={handleSignUp}
       />
+      {errorMessage &&
+        <Text style={styles.errorMessage}>{errorMessage}</Text>
+      }
     </View>
   )
 }
@@ -49,7 +64,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: "auto",
     marginBottom: "auto"
-  }
-})
+  },
+  errorMessage: {
+    color: "red",
+    marginTop: 10,
+    textAlign: "center",
+  },
+});
 
 export default RegisterScreen;
