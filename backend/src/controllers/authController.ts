@@ -7,8 +7,22 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
   const { username, email, password } = req.body;
 
   try {
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { username: username },
+          { email: email },
+        ],
+      },
+    });
+    
+    if (existingUser) {
+      const errorField = existingUser.username === username ? "Username" : "Email";
+      res.status(401).json({ message: `${errorField} already exists`});
+      return;
+    }
+    
     const hashedPassword = await hashPassword(password);
-
     const newUser = await prisma.user.create({
       data: { username, email, password: hashedPassword },
     });
