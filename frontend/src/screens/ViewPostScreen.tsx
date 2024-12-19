@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { View, Text, FlatList, Image, StyleSheet } from "react-native";
 import { Posts } from "../types/types";
 import { getUserPosts } from "../services/postService";
 import { useAuth } from "../context/AuthContext";
@@ -11,8 +11,7 @@ const ViewPostsScreen = () => {
   useEffect(() => {
     const fetchUserPosts = async (userId: number) => {
       try {
-        const response = await getUserPosts(userId);
-        const data: Posts[] = await response.json();
+        const data: Posts[] = await getUserPosts(userId);
         setPosts(data);
       } catch (error) {
         console.error("Failure fetching user posts:", error);
@@ -23,13 +22,36 @@ const ViewPostsScreen = () => {
 
   return (
     <View>
-      {/* <FlatList 
+      <FlatList 
         data={posts}
-        renderItem={({post}) => } //add post component here
-        keyExtractor={post => post.id}
-      /> */}
+        renderItem={({ item }) => (
+          <View style={styles.container}>
+            <Text>{item.title}</Text>
+            <Image
+              style={styles.image} 
+              source={{
+                uri: item.imageUrl,
+              }}
+            />
+            <Text>{item.content}</Text>
+          </View>
+          ) 
+        }
+        keyExtractor={item => item.id.toString()}
+      />
     </View>
   )
 }
 
 export default ViewPostsScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    justifyContent: "center",
+  },
+  image: {
+    width: 300,
+    height: 400
+  }
+})
