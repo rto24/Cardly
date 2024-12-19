@@ -24,6 +24,7 @@ const LoginScreen = ({ navigation }: any) => {
       } else {
         setErrorMessage(null);
         setUser(response.userId);
+        navigation.navigate("View Posts");
       }
     } catch (error) {
       console.error(error)

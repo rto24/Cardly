@@ -16,3 +16,12 @@ export interface ButtonProps {
   title: string;
   onPress: () => void;
 }
+
+export interface Posts {
+  id: number,
+  title: string,
+  content: string,
+  imageUrl: string,
+  userId?: number,
+  createdAt: string,
+}
