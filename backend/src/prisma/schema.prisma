@@ -8,82 +8,82 @@ datasource db {
 }
 
 model User {
-  id              Int               @id @default(autoincrement())
-  username        String            @unique
-  email           String            @unique
-  password        String
-  refreshToken    String?
-  createdAt       DateTime          @default(now())
-  posts           Post[]            // Relation: User has many Posts
-  comments        Comment[]         // Relation: User has many Comments
-  likes           Like[]            // Relation: User has many Likes
-  sentFriendRequests   Friend[]     @relation("FriendRequestsSent") // Relation: Sent Friend Requests
-  receivedFriendRequests Friend[]   @relation("FriendRequestsReceived") // Relation: Received Friend Requests
-  ownedServers    Server[]          @relation("ServerOwners") // Relation: Owned Servers
-  joinedServers   Server[]          @relation("ServerMembers") // Relation: Joined Servers
-  sentInvitations ServerInvitation[] @relation("SentInvitations") // Relation: Sent Server Invitations
-  receivedInvitations ServerInvitation[] @relation("ReceivedInvitations") // Relation: Received Server Invitations
+  username               String             @unique
+  email                  String             @unique
+  password               String
+  createdAt              DateTime           @default(now())
+  refreshToken           String?
+  id                     Int                @id @default(autoincrement())
+  comments               Comment[]
+  receivedFriendRequests Friend[]           @relation("FriendRequestsReceived")
+  sentFriendRequests     Friend[]           @relation("FriendRequestsSent")
+  likes                  Like[]
+  posts                  Post[]
+  ownedServers           Server[]           @relation("ServerOwners")
+  receivedInvitations    ServerInvitation[] @relation("ReceivedInvitations")
+  sentInvitations        ServerInvitation[] @relation("SentInvitations")
+  joinedServers          Server[]           @relation("ServerMembers")
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
-  title       String
-  content     String?
-  imageUrl    String?
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id]) // Relation to User
-  comments    Comment[] // Relation: Post has many Comments
-  likes       Like[]    // Relation: Post has many Likes
-  createdAt   DateTime  @default(now())
+  title     String
+  content   String?
+  imageUrl  String?
+  createdAt DateTime  @default(now())
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  comments  Comment[]
+  likes     Like[]
+  user      User      @relation(fields: [userId], references: [id])
 }
 
 model Comment {
-  id          Int       @id @default(autoincrement())
-  content     String
-  postId      Int
-  userId      Int
-  post        Post      @relation(fields: [postId], references: [id]) // Relation to Post
-  user        User      @relation(fields: [userId], references: [id]) // Relation to User
-  createdAt   DateTime  @default(now())
+  content   String
+  createdAt DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  userId    Int
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Like {
-  id          Int       @id @default(autoincrement())
-  postId      Int
-  userId      Int
-  post        Post      @relation(fields: [postId], references: [id]) // Relation to Post
-  user        User      @relation(fields: [userId], references: [id]) // Relation to User
+  id     Int  @id @default(autoincrement())
+  postId Int
+  userId Int
+  post   Post @relation(fields: [postId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
 }
 
 model Friend {
-  id          Int       @id @default(autoincrement())
-  senderId    Int
-  receiverId  Int
-  sender      User      @relation("FriendRequestsSent", fields: [senderId], references: [id]) // Relation to Sender
-  receiver    User      @relation("FriendRequestsReceived", fields: [receiverId], references: [id]) // Relation to Receiver
-  status      String    @default("pending") // Status: pending, accepted, rejected
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt  DateTime @default(now())
+  status     String   @default("pending")
+  updatedAt  DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  receiverId Int
+  senderId   Int
+  receiver   User     @relation("FriendRequestsReceived", fields: [receiverId], references: [id])
+  sender     User     @relation("FriendRequestsSent", fields: [senderId], references: [id])
 }
 
 model Server {
-  id          Int       @id @default(autoincrement())
   name        String
+  createdAt   DateTime           @default(now())
+  id          Int                @id @default(autoincrement())
   ownerId     Int
-  owner       User      @relation("ServerOwners", fields: [ownerId], references: [id]) // Relation to Owner
-  members     User[]    @relation("ServerMembers") // Relation to Members
-  invitations ServerInvitation[] // Relation: Server has many Invitations
-  createdAt   DateTime  @default(now())
+  owner       User               @relation("ServerOwners", fields: [ownerId], references: [id])
+  invitations ServerInvitation[]
+  members     User[]             @relation("ServerMembers")
 }
 
 model ServerInvitation {
-  id          Int       @id @default(autoincrement())
-  serverId    Int
-  senderId    Int
-  receiverId  Int
-  server      Server    @relation(fields: [serverId], references: [id]) // Relation to Server
-  sender      User      @relation("SentInvitations", fields: [senderId], references: [id]) // Relation to Sender
-  receiver    User      @relation("ReceivedInvitations", fields: [receiverId], references: [id]) // Relation to Receiver
-  status      String    @default("pending") // Status: pending, accepted, rejected
-  createdAt   DateTime  @default(now())
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  serverId   Int
+  senderId   Int
+  receiverId Int
+  receiver   User     @relation("ReceivedInvitations", fields: [receiverId], references: [id])
+  sender     User     @relation("SentInvitations", fields: [senderId], references: [id])
+  server     Server   @relation(fields: [serverId], references: [id])
 }
