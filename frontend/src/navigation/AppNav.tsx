@@ -20,10 +20,12 @@ const AppNav = () => {
         <Stack.Screen 
           name="Register"
           component={RegisterScreen}
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
           name="View Posts"
           component={ViewPostsScreen}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

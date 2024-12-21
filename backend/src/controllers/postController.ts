@@ -26,7 +26,59 @@ export const getUserPosts = async (req: Request, res: Response): Promise<void> =
 
     res.status(200).json(userPosts);
   } catch (error) { 
-    console.error("Error fetching user posts:", error);
     res.status(500).json({ message: "Error getting user posts:", error});
+  }
+};
+
+export const likePost = async (req: Request, res: Response): Promise<void> => {
+  const { postId } = req.params;
+  const { userId } = req.body;
+
+  try {
+    const existingLike = await prisma.like.findFirst({
+      where: {
+        postId: Number(postId),
+        userId: Number(userId),
+      },
+    });
+
+    if (existingLike) {
+      await prisma.like.delete({
+        where: {
+          id: existingLike.id,
+        },
+      });
+      
+      res.status(200).json({ message: "Post unliked" });
+      return;
+    } else {
+      const newLike = await prisma.like.create({
+        data: {
+          postId: Number(postId),
+          userId: Number(userId)
+        },
+      });
+      res.status(201).json(newLike);
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error liking post:", error});
+  }
+};
+
+export const commentOnPost = async (req: Request, res: Response): Promise<void> => {
+  const { postId } = req.params;
+  const { userId, content } = req.body;
+
+  try {
+    const newComment = await prisma.comment.create({
+      data: {
+        content,
+        postId: Number(postId),
+        userId: Number(userId),
+      }
+    });
+    res.status(200).json(newComment);
+  } catch (error) {
+    res.status(500).json({ message: "Error creating comment:", error});
   }
 };
