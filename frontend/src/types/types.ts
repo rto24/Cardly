@@ -35,6 +35,7 @@ export interface Like {
 
 export interface Posts {
   id: number;
+  userId: number;
   title: string;
   content: string;
   username: string;
@@ -42,7 +43,7 @@ export interface Posts {
   likes: Like[];
   comments: Comment[];
   imageUrl: string;
-  onLike: (id: any) => void;
-  onComment: (id: any, comment: string) => void;
+  onLike: (id: any, userId: any) => void;
+  onComment: (id: any, userId: any, comment: string) => void;
   createdAt: string;
 }
