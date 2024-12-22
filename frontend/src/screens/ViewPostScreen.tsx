@@ -41,6 +41,7 @@ const ViewPostsScreen = () => {
             createdAt={item.createdAt}
           />
         )}
+        keyExtractor={(item) => item.id.toString()}
       />
     </View>
   )
