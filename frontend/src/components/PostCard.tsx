@@ -6,6 +6,7 @@ import { Posts } from "../types/types";
 
 const PostCard: React.FC<Posts> = ({
   id,
+  userId,
   title,
   content,
   username,
@@ -35,7 +36,7 @@ const PostCard: React.FC<Posts> = ({
         <Image source={{ uri: imageUrl }}/>
       }
       <View>
-        <TouchableOpacity onPress={() => onLike(id)}>
+        <TouchableOpacity onPress={() => onLike(id, userId)}>
           <Text>♡</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => openComments()}>
@@ -52,7 +53,7 @@ const PostCard: React.FC<Posts> = ({
         />
         <Button 
           title="Send"
-          onPress={() => onComment(id, content)}
+          onPress={() => onComment(id, userId, content)}
         />
       </View>
 
