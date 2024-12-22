@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { TextInput, View, Image, Text, TouchableOpacity, Modal, ScrollView, StyleSheet } from "react-native";
+import { View, Image, Text, TouchableOpacity, Modal, ScrollView, StyleSheet } from "react-native";
+import InputField from "./InputField";
+import Button from "./Button";
 import { Posts } from "../types/types";
 
 const PostCard: React.FC<Posts> = ({
@@ -18,6 +20,7 @@ const PostCard: React.FC<Posts> = ({
   
   const [ isCommentModalOpen, setIsCommentModalOpen ] = useState<boolean>(false);
   const [ isLikeModalOpen, setIsLikeModalOpen ] = useState<boolean>(false);
+  const [ comment, setComment ] = useState<string>("");
 
   const openComments = () => setIsCommentModalOpen(!isCommentModalOpen);
   const openLikes = () => setIsLikeModalOpen(!isLikeModalOpen);
@@ -41,6 +44,17 @@ const PostCard: React.FC<Posts> = ({
       </View>
       <Text>{title}</Text>
       <Text>{content}</Text>
+      <View>
+        <InputField 
+          placeholder="Comment..."
+          value={comment}
+          onChangeText={setComment}
+        />
+        <Button 
+          title="Send"
+          onPress={() => onComment(id, content)}
+        />
+      </View>
 
       <Modal
         visible={isCommentModalOpen}
@@ -60,6 +74,33 @@ const PostCard: React.FC<Posts> = ({
                 </View>
               ))}
             </ScrollView>
+            <TouchableOpacity onPress={openComments}>
+              <Text>X</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={isLikeModalOpen}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={openLikes}
+      >
+        <View>
+          <View>
+            <Text>Likes</Text>
+            <ScrollView>
+              {likes.map((like, index) => (
+                <View>
+                  <Image source={{ uri: userAvatar }}/>
+                  <Text key={index}>{like.username}</Text>
+                </View>
+              ))}
+            </ScrollView>
+            <TouchableOpacity onPress={openLikes}>
+              <Text>X</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
