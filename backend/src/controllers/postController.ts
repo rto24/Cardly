@@ -30,6 +30,30 @@ export const getUserPosts = async (req: Request, res: Response): Promise<void> =
   }
 };
 
+export const getPostLikes = async (req: Request, res: Response): Promise<void> => {
+  const { postId } = req.params;
+  try {
+    const numericPostId = +postId;
+    const likesOnPost = await prisma.like.findMany({ where: { postId: numericPostId }});
+
+    res.status(200).json(likesOnPost);
+  } catch (error) {
+    res.status(500).json({ message: "Error getting likes on post:", error});
+  }
+};
+
+export const getComments = async (req: Request, res: Response): Promise<void> => {
+  const { postId } = req.params;
+  try {
+    const numericPostId = +postId;
+    const commentsOnPost = await prisma.comment.findMany({ where: { postId: numericPostId }});
+
+    res.status(200).json(commentsOnPost);
+  } catch (error) {
+    res.status(500).json({ message: "Error getting comments on post:", error});
+  }
+};
+
 export const likePost = async (req: Request, res: Response): Promise<void> => {
   const { postId } = req.params;
   const { userId } = req.body;
