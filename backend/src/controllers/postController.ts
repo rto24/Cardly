@@ -22,7 +22,18 @@ export const getUserPosts = async (req: Request, res: Response): Promise<void> =
   const { userId } = req.params;
   try {
     const numericId = +userId;
-    const userPosts = await prisma.post.findMany({ where: { userId: numericId } });
+    const userPosts = await prisma.post.findMany({ 
+      where: { userId: numericId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            avatar: true,
+          },
+        },
+      },
+    });
 
     res.status(200).json(userPosts);
   } catch (error) { 
@@ -34,7 +45,18 @@ export const getPostLikes = async (req: Request, res: Response): Promise<void> =
   const { postId } = req.params;
   try {
     const numericPostId = +postId;
-    const likesOnPost = await prisma.like.findMany({ where: { postId: numericPostId }});
+    const likesOnPost = await prisma.like.findMany({ 
+      where: { postId: numericPostId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            avatar: true,
+          },
+        },
+      },
+    });
 
     res.status(200).json(likesOnPost);
   } catch (error) {
@@ -46,7 +68,18 @@ export const getComments = async (req: Request, res: Response): Promise<void> =>
   const { postId } = req.params;
   try {
     const numericPostId = +postId;
-    const commentsOnPost = await prisma.comment.findMany({ where: { postId: numericPostId }});
+    const commentsOnPost = await prisma.comment.findMany({ 
+      where: { postId: numericPostId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            avatar: true,
+          },
+        },
+      },
+    });
 
     res.status(200).json(commentsOnPost);
   } catch (error) {

@@ -20,6 +20,46 @@ export const getUserPosts = async (userId: number) => {
   }
 };
 
+export const getLikesOnPost = async (postId: number) => {
+  try {
+    const response = await fetch(`${API_URL}/${postId}/like`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error("Failed to get likes on user post");
+    };
+
+    return data;
+  } catch (error) {
+    console.error("Failed to get likes on user post:", error);
+  }
+};
+
+export const getCommentsOnPost = async (postId: number) => {
+  try {
+    const response = await fetch(`${API_URL}/${postId}/comment`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error("Failed to get comments on user post");
+    };
+    
+    return data;
+  } catch(error) {
+    console.error("Fauled to get comments on user post:", error);
+  }
+};
+
 export const likePost = async (postId: number, userId: number) => {
   try {
     const response = await fetch(`${API_URL}/${postId}/like`, {

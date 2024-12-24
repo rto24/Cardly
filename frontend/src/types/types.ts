@@ -17,29 +17,30 @@ export interface ButtonProps {
   onPress: () => void;
 }
 
-export interface Comment {
+export interface User {
   id: number;
   username: string;
+  avatar: string;
+}
+
+export interface Comment {
+  id: number;
+  user: User;
   content: string;
-  userAvatar: string;
-  userId: number;
   createdAt: string;
 }
 
 export interface Like {
   id: number;
-  username: string;
-  userId: number;
-  userAvatar: string;
+  user: User;
 }
 
 export interface Posts {
   id: number;
   userId: number;
+  user: User;
   title: string;
   content: string;
-  username: string;
-  userAvatar: string;
   likes: Like[];
   comments: Comment[];
   imageUrl: string;
