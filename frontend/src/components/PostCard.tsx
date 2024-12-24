@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Image, Text, TouchableOpacity, Modal, ScrollView, StyleSheet } from "react-native";
 import InputField from "./InputField";
 import Button from "./Button";
-import { Posts } from "../types/types";
+import { Comment, Like, Posts, User } from "../types/types";
+import { getCommentsOnPost, getLikesOnPost } from "../services/postService";
 
 const PostCard: React.FC<Posts> = ({
   id,
   userId,
   title,
+  user,
   content,
-  username,
-  userAvatar,
-  likes,
-  comments,
   imageUrl,
   onLike,
   onComment,
@@ -21,7 +19,33 @@ const PostCard: React.FC<Posts> = ({
   
   const [ isCommentModalOpen, setIsCommentModalOpen ] = useState<boolean>(false);
   const [ isLikeModalOpen, setIsLikeModalOpen ] = useState<boolean>(false);
-  const [ comment, setComment ] = useState<string>("");
+  const [ likes, setLikes ] = useState<Like[]>([]);
+  const [ comments, setComments ] = useState<Comment[]>([]);
+  const [ newComment, setNewComment ] = useState<string>("");
+
+  useEffect(() => {
+    const fetchLikesOnPost = async () => {
+      try {
+        const data = await getLikesOnPost(id);
+        setLikes(data);
+      } catch(error) {
+        console.error(`Error fetching likes for post ${id}:`, error);
+      }
+    };
+    fetchLikesOnPost(); 
+  }, [id]);
+
+  useEffect(() => {
+    const fetchCommentsOnPost = async () => {
+      try {
+        const data = await getCommentsOnPost(id);
+        setComments(data);
+      } catch (error) {
+        console.error(`Error fetching comments for post ${id}:`, error);
+      }
+    };
+    fetchCommentsOnPost();
+  }, [id]);
 
   const openComments = () => setIsCommentModalOpen(!isCommentModalOpen);
   const openLikes = () => setIsLikeModalOpen(!isLikeModalOpen);
@@ -29,14 +53,17 @@ const PostCard: React.FC<Posts> = ({
   return (
     <View>
       <View>
-        <Image source={{ uri: userAvatar }}/>
-        <Text>{username}</Text>
+        <Image source={{ uri: user.avatar }} />
+        <Text>{user.username}</Text>
       </View>
       {imageUrl &&
-        <Image source={{ uri: imageUrl }}/>
+        <Image 
+          source={{ uri: imageUrl }}
+          style={{ width: 300, height: 400 }}  
+        />
       }
       <View>
-        <TouchableOpacity onPress={() => onLike(id, userId)}>
+        <TouchableOpacity onPress={() => onLike(id, user.id)}>
           <Text>♡</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => openComments()}>
@@ -48,12 +75,14 @@ const PostCard: React.FC<Posts> = ({
       <View>
         <InputField 
           placeholder="Comment..."
-          value={comment}
-          onChangeText={setComment}
+          value={newComment}
+          onChangeText={setNewComment}
         />
         <Button 
           title="Send"
-          onPress={() => onComment(id, userId, content)}
+          onPress={() => {
+            onComment(id, user.id, newComment)
+          }}
         />
       </View>
 
@@ -68,9 +97,13 @@ const PostCard: React.FC<Posts> = ({
             <Text>Comments</Text>
             <ScrollView>
               {comments.map((comment, index) => (
-                <View>
-                  <Image source={{ uri: userAvatar }}/>
-                  <Text key={index}>{comment.content}</Text>
+                <View key={index}>
+                  <Image 
+                    source={{ uri: comment.user.avatar }}
+                    style={{ width: 50, height: 50 }}
+                  />
+                  <Text>{comment.user.username}</Text>
+                  <Text>{comment.content}</Text>
                   <Text>{createdAt}</Text>
                 </View>
               ))}
@@ -93,9 +126,12 @@ const PostCard: React.FC<Posts> = ({
             <Text>Likes</Text>
             <ScrollView>
               {likes.map((like, index) => (
-                <View>
-                  <Image source={{ uri: userAvatar }}/>
-                  <Text key={index}>{like.username}</Text>
+                <View key={index}>
+                  <Image 
+                    source={{ uri: like.user.avatar }}
+                    style={{ width: 50, height: 50 }}
+                  />
+                  <Text>{like.user.username}</Text>
                 </View>
               ))}
             </ScrollView>
