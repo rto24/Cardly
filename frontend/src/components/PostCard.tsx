@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Image, Text, TouchableOpacity, Modal, ScrollView, StyleSheet } from "react-native";
 import InputField from "./InputField";
 import Button from "./Button";
-import { Comment, Like, Posts, User } from "../types/types";
+import { Comment, Like, Posts } from "../types/types";
 import { getCommentsOnPost, getLikesOnPost } from "../services/postService";
 
 const PostCard: React.FC<Posts> = ({
@@ -53,7 +53,10 @@ const PostCard: React.FC<Posts> = ({
   return (
     <View>
       <View>
-        <Image source={{ uri: user.avatar }} />
+        <Image 
+          source={{ uri: user.avatar }} 
+          style={{ width: 50, height: 50 }}
+        />
         <Text>{user.username}</Text>
       </View>
       {imageUrl &&
@@ -82,6 +85,7 @@ const PostCard: React.FC<Posts> = ({
           title="Send"
           onPress={() => {
             onComment(id, user.id, newComment)
+            setNewComment("")
           }}
         />
       </View>
