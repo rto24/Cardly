@@ -51,102 +51,127 @@ const PostCard: React.FC<Posts> = ({
   const openLikes = () => setIsLikeModalOpen(!isLikeModalOpen);
 
   return (
-    <View>
-      <View>
-        <Image 
-          source={{ uri: user.avatar }} 
-          style={{ width: 50, height: 50 }}
+    <View className="bg-white border border-gray-300 rounded-lg mb-4">
+      {/* Header */}
+      <View className="flex-row items-center p-4">
+        <Image
+          source={{ uri: user.avatar }}
+          className="w-12 h-12 rounded-full"
         />
-        <Text>{user.username}</Text>
+        <Text className="ml-4 font-bold text-gray-900">{user.username}</Text>
       </View>
-      {imageUrl &&
-        <Image 
+
+      {/* Post Image */}
+      {imageUrl && (
+        <Image
           source={{ uri: imageUrl }}
-          style={{ width: 300, height: 400 }}  
+          className="w-full h-96"
+          resizeMode="cover"
         />
-      }
-      <View>
+      )}
+
+      {/* Action Buttons */}
+      <View className="flex-row justify-between px-4 py-2">
         <TouchableOpacity onPress={() => onLike(id, user.id)}>
-          <Text>♡</Text>
+          <Text className="text-2xl">♡</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => openComments()}>
-          <Text>💬</Text>
+        <TouchableOpacity onPress={openComments}>
+          <Text className="text-2xl">💬</Text>
         </TouchableOpacity>
       </View>
-      <Text>{title}</Text>
-      <Text>{content}</Text>
-      <View>
-        <InputField 
-          placeholder="Comment..."
+
+      {/* Post Title & Content */}
+      <View className="px-4 pb-4">
+        <Text className="font-semibold text-gray-800">{title}</Text>
+        <Text className="text-gray-700 mt-1">{content}</Text>
+      </View>
+
+      {/* Comment Input */}
+      <View className="px-4 pb-4">
+        <InputField
+          placeholder="Add a comment..."
           value={newComment}
           onChangeText={setNewComment}
+          className="border border-gray-300 rounded-full px-4 py-2"
         />
-        <Button 
-          title="Send"
+        <Button
+          title="Post"
           onPress={() => {
-            onComment(id, user.id, newComment)
-            setNewComment("")
+            onComment(id, user.id, newComment);
+            setNewComment("");
           }}
+          className="mt-2 bg-blue-500 text-white py-2 px-4 rounded-full"
         />
       </View>
 
+      {/* Comment Modal */}
       <Modal
         visible={isCommentModalOpen}
         animationType="slide"
         transparent={true}
         onRequestClose={openComments}
       >
-        <View>
-          <View>
-            <Text>Comments</Text>
-            <ScrollView>
-              {comments.map((comment, index) => (
-                <View key={index}>
-                  <Image 
-                    source={{ uri: comment.user.avatar }}
-                    style={{ width: 50, height: 50 }}
-                  />
-                  <Text>{comment.user.username}</Text>
-                  <Text>{comment.content}</Text>
-                  <Text>{createdAt}</Text>
-                </View>
-              ))}
-            </ScrollView>
-            <TouchableOpacity onPress={openComments}>
-              <Text>X</Text>
-            </TouchableOpacity>
+        <View className="flex-1 bg-white">
+          <View className="p-4 border-b border-gray-300">
+            <Text className="text-xl font-bold">Comments</Text>
           </View>
+          <ScrollView className="flex-1 p-4">
+            {comments.map((comment, index) => (
+              <View key={index} className="flex-row items-start mb-4">
+                <Image
+                  source={{ uri: comment.user.avatar }}
+                  className="w-10 h-10 rounded-full"
+                />
+                <View className="ml-3 flex-1">
+                  <Text className="font-bold text-gray-900">{comment.user.username}</Text>
+                  <Text className="text-gray-700">{comment.content}</Text>
+                  <Text className="text-xs text-gray-500">{createdAt}</Text>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+          <TouchableOpacity
+            className="p-4 border-t border-gray-300 bg-gray-100"
+            onPress={openComments}
+          >
+            <Text className="text-center text-gray-800">Close</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
 
+      {/* Likes Modal */}
       <Modal
         visible={isLikeModalOpen}
         animationType="slide"
         transparent={true}
         onRequestClose={openLikes}
       >
-        <View>
-          <View>
-            <Text>Likes</Text>
-            <ScrollView>
-              {likes.map((like, index) => (
-                <View key={index}>
-                  <Image 
-                    source={{ uri: like.user.avatar }}
-                    style={{ width: 50, height: 50 }}
-                  />
-                  <Text>{like.user.username}</Text>
-                </View>
-              ))}
-            </ScrollView>
-            <TouchableOpacity onPress={openLikes}>
-              <Text>X</Text>
-            </TouchableOpacity>
+        <View className="flex-1 bg-white">
+          <View className="p-4 border-b border-gray-300">
+            <Text className="text-xl font-bold">Likes</Text>
           </View>
+          <ScrollView className="flex-1 p-4">
+            {likes.map((like, index) => (
+              <View key={index} className="flex-row items-center mb-4">
+                <Image
+                  source={{ uri: like.user.avatar }}
+                  className="w-10 h-10 rounded-full"
+                />
+                <Text className="ml-3 font-bold text-gray-900">{like.user.username}</Text>
+              </View>
+            ))}
+          </ScrollView>
+          <TouchableOpacity
+            className="p-4 border-t border-gray-300 bg-gray-100"
+            onPress={openLikes}
+          >
+            <Text className="text-center text-gray-800">Close</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
     </View>
-  ); 
+  );
 };
+
 
 export default PostCard;
