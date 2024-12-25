@@ -7,10 +7,11 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChangeText,
   secureTextEntry = false,
+  className,
 }) => (
   <View style={styles.container}>
     <TextInput 
-      style={styles.input}
+      className={className}
       placeholder={placeholder}
       value={value}
       onChangeText={onChangeText}
