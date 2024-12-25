@@ -3,6 +3,7 @@ export interface InputFieldProps {
   value: string;
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
+  className: string;
 }
 
 export interface AuthContextType {
@@ -15,6 +16,7 @@ export interface AuthContextType {
 export interface ButtonProps {
   title: string;
   onPress: () => void;
+  className: string;
 }
 
 export interface User {
