@@ -22,6 +22,16 @@ const ViewPostsScreen = () => {
     fetchUserPosts(user);
   }, []);
 
+  const handleComment = async (postId: number, userId: number, content: string): Promise<Comment> => {
+    try {
+      const newComment = await commentOnPost(postId, userId, content);
+      return newComment;
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      throw error;
+    }
+  };
+
   return (
     <View>
       <FlatList 
@@ -37,7 +47,8 @@ const ViewPostsScreen = () => {
             comments={item.comments}
             imageUrl={item.imageUrl}
             onLike={() => likePost(item.id, item.user.id)}
-            onComment={(postId, userId, comment) => commentOnPost(postId, userId, comment)}
+            onComment={(postId, userId, comment) => handleComment(postId, userId, comment)}
+            // onComment={handleComment}
             createdAt={item.createdAt}
           />
         )}

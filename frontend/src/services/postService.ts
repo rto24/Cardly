@@ -1,3 +1,5 @@
+import { Comment } from "../types/types";
+
 const API_URL = "http://localhost:8080/post";
 
 export const getUserPosts = async (userId: number) => {
@@ -84,7 +86,7 @@ export const likePost = async (postId: number, userId: number) => {
   }
 };
 
-export const commentOnPost = async (postId: number, userId: number, content: string) => {
+export const commentOnPost = async (postId: number, userId: number, content: string): Promise<Comment> => {
   try {
     const response = await fetch(`${API_URL}/${postId}/comment`, {
       method: "POST",
@@ -98,13 +100,15 @@ export const commentOnPost = async (postId: number, userId: number, content: str
       })
     });
 
-    const data = response.json();
-    
     if (!response.ok) {
       throw new Error("Failed to comment on post");
     }
+
+    const data: Comment = await response.json();
+    
     return data;
   } catch (error) {
     console.error("Failed to comment on post:", error);
+    throw new Error("Error occurred while commenting on post. Please try again.");
   }
 };

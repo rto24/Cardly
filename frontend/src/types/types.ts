@@ -47,6 +47,6 @@ export interface Posts {
   comments: Comment[];
   imageUrl: string;
   onLike: (id: any, userId: any) => void;
-  onComment: (id: any, userId: any, comment: string) => void;
+  onComment: (id: any, userId: any, comment: string) => Promise<Comment>;
   createdAt: string;
 }

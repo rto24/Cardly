@@ -47,6 +47,18 @@ const PostCard: React.FC<Posts> = ({
     fetchCommentsOnPost();
   }, [id]);
 
+  const handleCommentPost = async () => {
+    try {
+      if (newComment === "") return;
+      const comment = await onComment(id, userId, newComment);
+      setComments((prev) => [...prev, comment]);
+      setNewComment("");
+    } catch (error) {
+      console.error("Failed to post comment:", error);
+    }
+  };
+
+
   const openComments = () => setIsCommentModalOpen(!isCommentModalOpen);
   const openLikes = () => setIsLikeModalOpen(!isLikeModalOpen);
 
@@ -63,13 +75,13 @@ const PostCard: React.FC<Posts> = ({
 
       {/* Post Image */}
       {imageUrl && (
-        <View className="flex justify-start items-center h-auto">
-          <Image
-            source={{ uri: imageUrl }}
-            className="h-96 w-full"
-            resizeMode="contain"
-          />
-        </View>
+      <View className="flex justify-start items-center h-auto">
+        <Image
+          source={{ uri: imageUrl }}
+          className="h-96 w-full"
+          resizeMode="contain"
+        />
+      </View>
       )}
 
       {/* Action Buttons */}
@@ -99,15 +111,16 @@ const PostCard: React.FC<Posts> = ({
         <Button
           title="Post"
           onPress={() => {
-            onComment(id, user.id, newComment);
-            setNewComment("");
+            // onComment(id, user.id, newComment);
+            // setNewComment("");
+            handleCommentPost();
           }}
           className="mt-2 bg-blue-500 text-white py-2 px-4 rounded-full"
         />
       </View>
 
-      {/* Comment Modal */}
-      <Modal
+       {/* Comment Modal */}
+       <Modal
         visible={isCommentModalOpen}
         animationType="slide"
         transparent={true}
