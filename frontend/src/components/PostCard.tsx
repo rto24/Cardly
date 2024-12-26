@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, Text, TouchableOpacity, Modal, ScrollView, StyleSheet } from "react-native";
+import { View, Image, Text, TouchableOpacity, Modal, ScrollView, SafeAreaView } from "react-native";
 import InputField from "./InputField";
 import Button from "./Button";
 import { Comment, Like, Posts } from "../types/types";
@@ -63,11 +63,13 @@ const PostCard: React.FC<Posts> = ({
 
       {/* Post Image */}
       {imageUrl && (
-        <Image
-          source={{ uri: imageUrl }}
-          className="w-full h-96"
-          resizeMode="cover"
-        />
+        <View className="flex justify-start items-center h-auto">
+          <Image
+            source={{ uri: imageUrl }}
+            className="h-96 w-full"
+            resizeMode="contain"
+          />
+        </View>
       )}
 
       {/* Action Buttons */}
@@ -111,10 +113,13 @@ const PostCard: React.FC<Posts> = ({
         transparent={true}
         onRequestClose={openComments}
       >
-        <View className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-white">
+          {/* Header */}
           <View className="p-4 border-b border-gray-300">
-            <Text className="text-xl font-bold">Comments</Text>
+            <Text className="text-xl font-bold text-center">Comments</Text>
           </View>
+
+          {/* Comments List */}
           <ScrollView className="flex-1 p-4">
             {comments.map((comment, index) => (
               <View key={index} className="flex-row items-start mb-4">
@@ -130,13 +135,15 @@ const PostCard: React.FC<Posts> = ({
               </View>
             ))}
           </ScrollView>
+
+          {/* Close Button */}
           <TouchableOpacity
             className="p-4 border-t border-gray-300 bg-gray-100"
             onPress={openComments}
           >
             <Text className="text-center text-gray-800">Close</Text>
           </TouchableOpacity>
-        </View>
+        </SafeAreaView>
       </Modal>
 
       {/* Likes Modal */}
