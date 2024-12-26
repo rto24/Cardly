@@ -132,7 +132,16 @@ export const commentOnPost = async (req: Request, res: Response): Promise<void> 
         content,
         postId: Number(postId),
         userId: Number(userId),
-      }
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            avatar: true,
+          },
+        },
+      },
     });
     res.status(200).json(newComment);
   } catch (error) {
