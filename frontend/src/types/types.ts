@@ -50,3 +50,4 @@ export interface Posts {
   onComment: (id: any, userId: any, comment: string) => Promise<Comment>;
   createdAt: string;
 }
+
