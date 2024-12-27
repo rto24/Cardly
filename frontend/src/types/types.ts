@@ -3,7 +3,7 @@ export interface InputFieldProps {
   value: string;
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
-  className: string;
+  className?: string;
 }
 
 export interface AuthContextType {
@@ -16,7 +16,7 @@ export interface AuthContextType {
 export interface ButtonProps {
   title: string;
   onPress: () => void;
-  className: string;
+  className?: string;
 }
 
 export interface User {
@@ -50,3 +50,4 @@ export interface Posts {
   onComment: (id: any, userId: any, comment: string) => Promise<Comment>;
   createdAt: string;
 }
+
