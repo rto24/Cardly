@@ -1,3 +1,5 @@
+import * as SecureStorage from "expo-secure-store";
+
 const API_URL = "http://localhost:8080/api/auth";
 
 export const loginUser = async (email: string, password: string) => {
@@ -18,6 +20,9 @@ export const loginUser = async (email: string, password: string) => {
     if (!response.ok) {
       throw new Error("Failed to log user in");
     }
+    await SecureStorage.setItemAsync("accessToken", data.accessToken);
+    await SecureStorage.setItemAsync("refreshToken", data.refreshToken);
+
     return data;
   } catch (error) {
     console.error("Failed to log user in:", error)
@@ -48,3 +53,4 @@ export const registerUser = async (email: string, username: string, password: st
     console.error("Failed to sign up user:", error);
   }
 };
+
