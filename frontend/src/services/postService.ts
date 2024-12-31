@@ -1,114 +1,87 @@
-import { Comment } from "../types/types";
+import { Comment, Posts, Like } from "../types/types";
+import { fetchWithAuth } from "./apiService";
 
-const API_URL = "http://localhost:8080/post";
-
-export const getUserPosts = async (userId: number) => {
+export const getUserPosts = async (userId: number): Promise<Posts[]> => {
   try {
-    const response = await fetch(`${API_URL}/${userId}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error("Failed to get user posts");
+    const response = await fetchWithAuth<Posts[]>(`/${userId}`, { method: "GET"}, "post");
+    if (response.status === 200) {
+      return response.data;
     };
-
-    return data;
-  } catch(error) {
+    throw new Error("Failed to get user posts");
+  } catch (error) {
     console.error("Failed to get user posts:", error);
+    return [];
   }
 };
 
-export const getLikesOnPost = async (postId: number) => {
+export const getLikesOnPost = async (postId: number): Promise<Like[]> => {
   try {
-    const response = await fetch(`${API_URL}/${postId}/like`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error("Failed to get likes on user post");
+    const response = await fetchWithAuth<Like[]>(`/${postId}/like`, { method: "GET"}, "post");
+    if (response.status === 200) {
+      return response.data;
     };
-
-    return data;
+    throw new Error("Failed to get likes on post");
   } catch (error) {
-    console.error("Failed to get likes on user post:", error);
+    console.error("Failed to get likes on post:", error);
+    return [];
   }
 };
 
-export const getCommentsOnPost = async (postId: number) => {
+export const getCommentsOnPost = async (postId: number): Promise<Comment[]> => {
   try {
-    const response = await fetch(`${API_URL}/${postId}/comment`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error("Failed to get comments on user post");
-    };
-    
-    return data;
-  } catch(error) {
-    console.error("Fauled to get comments on user post:", error);
-  }
-};
-
-export const likePost = async (postId: number, userId: number) => {
-  try {
-    const response = await fetch(`${API_URL}/${postId}/like`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        postId,
-        userId
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error("Failed to like post");
+    const response = await fetchWithAuth<Comment[]>(`/${postId}/comment`, { method: "GET"}, "post");
+    if (response.status === 200) {
+      return response.data;
     }
-    return data;
+    throw new Error("Failed to get comments on post");
   } catch (error) {
-    console.error("Failed to like post:", error)
+    console.error("Failed to get comments on post:", error);
+    return [];
+  }
+}
+
+export const likePost = async (postId: number, userId: number): Promise<Like> => {
+  try {
+    const response = await fetchWithAuth<Like>(
+      `/${postId}/like`,
+      { 
+        method: "POST", 
+        headers: { 
+          "Content-Type": "application/json" 
+        },
+        body: JSON.stringify({ postId, userId })
+      }, 
+      "post"
+    );
+    if (response.status === 200) {
+      return response.data;
+    };
+    throw new Error("Failed to like post");
+  } catch (error) {
+    console.error("Failed to like post:", error);
+    throw error;
   }
 };
 
 export const commentOnPost = async (postId: number, userId: number, content: string): Promise<Comment> => {
   try {
-    const response = await fetch(`${API_URL}/${postId}/comment`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        postId,
-        userId,
-        content
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to comment on post");
-    }
-
-    const data: Comment = await response.json();
-    
-    return data;
+    const response = await fetchWithAuth<Comment>(
+      `/${postId}/comment`,
+      { 
+        method: "POST", 
+        headers: { 
+          "Content-Type": "application/json" 
+        },
+        body: JSON.stringify({ postId, userId, content })
+      }, 
+      "post"
+    );
+    if (response.status === 200) {
+      return response.data;
+    };
+    throw new Error("Failed to comment on post");
   } catch (error) {
     console.error("Failed to comment on post:", error);
-    throw new Error("Error occurred while commenting on post. Please try again.");
+    throw error;
   }
 };

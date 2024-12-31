@@ -13,11 +13,13 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "newArchEnabled": true,
       "supportsTablet": true,
       "bundleIdentifier": "com.example.frontend",
       "buildNumber": "1.0.0"
     },
     "android": {
+      "newArchEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -29,7 +31,9 @@
       "bundler": "metro",
       "favicon": "./src/assets/favicon.png"
     },
-    "entryPoint": "./index.ts"
+    "entryPoint": "./index.ts",
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }
-

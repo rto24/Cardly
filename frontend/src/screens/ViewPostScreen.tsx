@@ -12,8 +12,8 @@ const ViewPostsScreen = () => {
   useEffect(() => {
     const fetchUserPosts = async (userId: number) => {
       try {
-        const data: Posts[] = await getUserPosts(userId);
-        setPosts(data);
+        const data = await getUserPosts(userId);
+        setPosts(data || []);
         console.log(posts);
       } catch (error) {
         console.error("Failure fetching user posts:", error);
@@ -48,7 +48,6 @@ const ViewPostsScreen = () => {
             imageUrl={item.imageUrl}
             onLike={() => likePost(item.id, item.user.id)}
             onComment={(postId, userId, comment) => handleComment(postId, userId, comment)}
-            // onComment={handleComment}
             createdAt={item.createdAt}
           />
         )}

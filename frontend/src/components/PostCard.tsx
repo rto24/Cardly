@@ -27,7 +27,7 @@ const PostCard: React.FC<Posts> = ({
     const fetchLikesOnPost = async () => {
       try {
         const data = await getLikesOnPost(id);
-        setLikes(data);
+        setLikes(data || []);
       } catch(error) {
         console.error(`Error fetching likes for post ${id}:`, error);
       }
@@ -39,7 +39,7 @@ const PostCard: React.FC<Posts> = ({
     const fetchCommentsOnPost = async () => {
       try {
         const data = await getCommentsOnPost(id);
-        setComments(data);
+        setComments(data || []);
       } catch (error) {
         console.error(`Error fetching comments for post ${id}:`, error);
       }
