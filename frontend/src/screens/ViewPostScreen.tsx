@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, Image, StyleSheet } from "react-native";
-import { Like, Posts, Comment } from "../types/types";
+import { Like, Posts, Comment, LikeResponse } from "../types/types";
 import { getUserPosts, likePost, commentOnPost, getLikesOnPost } from "../services/postService";
 import { useAuth } from "../context/AuthContext";
 import PostCard from "../components/PostCard";
@@ -32,6 +32,16 @@ const ViewPostsScreen = () => {
     }
   };
 
+  const handleLike = async (postId: number, userId: number): Promise<LikeResponse> => {
+    try {
+      const newLike = await likePost(postId, userId);
+      return newLike;
+    } catch (error) {
+      console.error("Error liking post:", error);
+      throw error;
+    }
+  };
+
   return (
     <View>
       <FlatList 
@@ -46,7 +56,7 @@ const ViewPostsScreen = () => {
             likes={item.likes}
             comments={item.comments}
             imageUrl={item.imageUrl}
-            onLike={() => likePost(item.id, item.user.id)}
+            onLike={(postId, userId) => handleLike(postId, userId)}
             onComment={(postId, userId, comment) => handleComment(postId, userId, comment)}
             createdAt={item.createdAt}
           />
