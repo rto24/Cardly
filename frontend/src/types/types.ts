@@ -37,6 +37,11 @@ export interface Like {
   user: User;
 }
 
+export interface LikeResponse {
+  action: "liked" | "unliked";
+  newLike?: Like;
+}
+
 export interface Posts {
   id: number;
   userId: number;
@@ -46,7 +51,7 @@ export interface Posts {
   likes: Like[];
   comments: Comment[];
   imageUrl: string;
-  onLike: (id: any, userId: any) => void;
+  onLike: (id: any, userId: any) => Promise<LikeResponse>;
   onComment: (id: any, userId: any, comment: string) => Promise<Comment>;
   createdAt: string;
 }
