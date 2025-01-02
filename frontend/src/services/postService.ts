@@ -1,4 +1,4 @@
-import { Comment, Posts, Like } from "../types/types";
+import { Comment, Posts, Like, LikeResponse } from "../types/types";
 import { fetchWithAuth } from "./apiService";
 
 export const getUserPosts = async (userId: number): Promise<Posts[]> => {
@@ -40,9 +40,9 @@ export const getCommentsOnPost = async (postId: number): Promise<Comment[]> => {
   }
 }
 
-export const likePost = async (postId: number, userId: number): Promise<Like> => {
+export const likePost = async (postId: number, userId: number): Promise<LikeResponse> => {
   try {
-    const response = await fetchWithAuth<Like>(
+    const response = await fetchWithAuth<LikeResponse>(
       `/${postId}/like`,
       { 
         method: "POST", 
