@@ -105,17 +105,24 @@ export const likePost = async (req: Request, res: Response): Promise<void> => {
           id: existingLike.id,
         },
       });
-      
-      res.status(200).json({ message: "Post unliked" });
-      return;
+      res.status(200).json({ action: "unliked" });
     } else {
       const newLike = await prisma.like.create({
         data: {
           postId: Number(postId),
           userId: Number(userId)
         },
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              avatar: true,
+            }
+          }
+        }
       });
-      res.status(201).json(newLike);
+      res.status(200).json({ action: "liked", newLike });
     }
   } catch (error) {
     res.status(500).json({ message: "Error liking post:", error});
