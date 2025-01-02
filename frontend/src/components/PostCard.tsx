@@ -58,6 +58,22 @@ const PostCard: React.FC<Posts> = ({
     }
   };
 
+  const handleLikePost = async () => {
+    try {
+      const response = await onLike(id, userId);
+      setLikes((prevLikes) => {
+        if (response.action === "liked" && response.newLike) {
+          return [...prevLikes, response.newLike];
+        } else if (response.action === "unliked") {
+          return prevLikes.filter((like) => like.user.id !== userId)
+        }
+        return prevLikes;
+      })
+    } catch (error) {
+      console.error("Failed to like post:", error)
+    }
+  };
+
 
   const openComments = () => setIsCommentModalOpen(!isCommentModalOpen);
   const openLikes = () => setIsLikeModalOpen(!isLikeModalOpen);
@@ -85,13 +101,20 @@ const PostCard: React.FC<Posts> = ({
       )}
 
       {/* Action Buttons */}
-      <View className="flex-row justify-between px-4 py-2">
-        <TouchableOpacity onPress={() => onLike(id, user.id)}>
+      <View className="flex-row gap-7 px-4 py-2">
+        <TouchableOpacity onPress={handleLikePost}>
           <Text className="text-2xl">♡</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={openComments}>
           <Text className="text-2xl">💬</Text>
         </TouchableOpacity>
+        <TouchableOpacity>
+          <Text className="text-2xl">➤</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View className="flex-row px-4 py-4">
+        <Text onPress={openLikes}>Liked by...</Text>
       </View>
 
       {/* Post Title & Content */}
@@ -111,8 +134,6 @@ const PostCard: React.FC<Posts> = ({
         <Button
           title="Post"
           onPress={() => {
-            // onComment(id, user.id, newComment);
-            // setNewComment("");
             handleCommentPost();
           }}
           className="mt-2 bg-blue-500 text-white py-2 px-4 rounded-full"
@@ -166,28 +187,30 @@ const PostCard: React.FC<Posts> = ({
         transparent={true}
         onRequestClose={openLikes}
       >
-        <View className="flex-1 bg-white">
-          <View className="p-4 border-b border-gray-300">
-            <Text className="text-xl font-bold">Likes</Text>
+        <SafeAreaView className="flex-1 bg-white">
+          <View className="flex-1 bg-white">
+            <View className="p-4 border-b border-gray-300">
+              <Text className="text-xl font-bold text-center">Likes</Text>
+            </View>
+            <ScrollView className="flex-1 p-4">
+              {likes.map((like, index) => (
+                <View key={index} className="flex-row items-center mb-4">
+                  <Image
+                    source={{ uri: like.user.avatar }}
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <Text className="ml-3 font-bold text-gray-900">{like.user.username}</Text>
+                </View>
+              ))}
+            </ScrollView>
+            <TouchableOpacity
+              className="p-4 border-t border-gray-300 bg-gray-100"
+              onPress={openLikes}
+            >
+              <Text className="text-center text-gray-800">Close</Text>
+            </TouchableOpacity>
           </View>
-          <ScrollView className="flex-1 p-4">
-            {likes.map((like, index) => (
-              <View key={index} className="flex-row items-center mb-4">
-                <Image
-                  source={{ uri: like.user.avatar }}
-                  className="w-10 h-10 rounded-full"
-                />
-                <Text className="ml-3 font-bold text-gray-900">{like.user.username}</Text>
-              </View>
-            ))}
-          </ScrollView>
-          <TouchableOpacity
-            className="p-4 border-t border-gray-300 bg-gray-100"
-            onPress={openLikes}
-          >
-            <Text className="text-center text-gray-800">Close</Text>
-          </TouchableOpacity>
-        </View>
+        </SafeAreaView>
       </Modal>
     </View>
   );
