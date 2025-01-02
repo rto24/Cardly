@@ -58,6 +58,23 @@ const PostCard: React.FC<Posts> = ({
     }
   };
 
+  const handleLikePost = async () => {
+    try {
+      const response = await onLike(id, userId);
+      setLikes((prevLikes) => {
+        if (response.action === "liked" && response.newLike) {
+          return [...prevLikes, response.newLike];
+        } else if (response.action === "unliked") {
+          return prevLikes.filter((like) => like.user.id !== userId)
+        }
+        return prevLikes;
+      })
+    } catch (error) {
+      console.error("Failed to like post:", error)
+    }
+  };
+
+
   const openComments = () => setIsCommentModalOpen(!isCommentModalOpen);
   const openLikes = () => setIsLikeModalOpen(!isLikeModalOpen);
 
@@ -85,7 +102,7 @@ const PostCard: React.FC<Posts> = ({
 
       {/* Action Buttons */}
       <View className="flex-row gap-7 px-4 py-2">
-        <TouchableOpacity onPress={() => onLike(id, user.id)}>
+        <TouchableOpacity onPress={handleLikePost}>
           <Text className="text-2xl">♡</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={openComments}>
