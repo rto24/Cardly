@@ -85,3 +85,26 @@ export const commentOnPost = async (postId: number, userId: number, content: str
     throw error;
   }
 };
+
+export const createPost = async (title: string, content: string, imageUrl: string, userId: number): Promise<Posts> => {
+  try {
+    const response = await fetchWithAuth<Posts>(
+      `/create-post`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ title, content, imageUrl, userId })
+      },
+      "post"
+    );
+    if (response.status === 201) {
+      return response.data;
+    };
+    throw new Error("Failed to create post");
+  } catch (error) {
+    console.error("Failed to create post:", error);
+    throw error;
+  }
+};
