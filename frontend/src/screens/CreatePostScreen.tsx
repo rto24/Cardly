@@ -2,6 +2,8 @@ import { View, Text } from 'react-native'
 import React, { useState } from 'react'
 import { createPost } from '../services/postService';
 import { useAuth } from '../context/AuthContext';
+import InputField from '../components/InputField';
+import Button from '../components/Button';
 
 function CreatePostScreen() {
   const [ title, setTitle ] = useState<string>("");
@@ -28,6 +30,29 @@ function CreatePostScreen() {
   return (
     <View>
       <Text>CreatePostScreen</Text>
+      <InputField 
+        placeholder="Title"
+        value={title}
+        onChangeText={setTitle}
+      />
+      <InputField 
+        placeholder="Caption"
+        value={content}
+        onChangeText={setContent}
+      />
+      {/* Image will be changed to let users select a photo from lib or take a picture*/}
+      <InputField 
+        placeholder="Image"
+        value={image}
+        onChangeText={setImage}
+      />
+      {errorMessage &&
+        <Text>{errorMessage}</Text>
+      }
+      <Button 
+        title="Create Post"
+        onPress={handleCreatePost}
+      />
     </View>
   )
 }
