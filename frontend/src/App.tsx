@@ -8,13 +8,8 @@ export default function App() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <AuthProvider>
-        <MainNav />
+        <AppNav />
       </AuthProvider>
     </SafeAreaView>
   );
-}
-
-const MainNav = () => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <AppNav /> : <LoginScreen />
 }
