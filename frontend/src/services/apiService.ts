@@ -1,5 +1,5 @@
 import * as SecureStorage from "expo-secure-store";
-import { getRefreshToken, saveRefreshToken } from "./secureStorage";
+import { getRefreshToken, saveRefreshToken, saveAccessToken } from "./secureStorage";
 import { ApiResponse } from "../types/api";
 
 const BASE_URLS = {
@@ -7,7 +7,11 @@ const BASE_URLS = {
   post: "http://localhost:8080/post",
 };
 
-export const fetchWithAuth = async <T = any>(endpoint: string, options: RequestInit, base: keyof typeof BASE_URLS = "auth") => {
+export const fetchWithAuth = async <T = any>(
+  endpoint: string,
+  options: RequestInit,
+  base: keyof typeof BASE_URLS = "auth"
+): Promise<ApiResponse<T>> => {
   let accessToken = await SecureStorage.getItemAsync("accessToken");
 
   const refreshAccessToken = async () => {
@@ -18,44 +22,48 @@ export const fetchWithAuth = async <T = any>(endpoint: string, options: RequestI
 
     const response = await fetch(`${BASE_URLS.auth}/refresh`, {
       method: "POST",
-      headers: { 
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        refreshToken
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
     });
 
     if (!response.ok) {
       throw new Error("Failed to refresh token");
     }
-    
+
     const { accessToken: newAccessToken, refreshToken: newRefreshToken } = await response.json();
 
-    await SecureStorage.setItemAsync("accessToken", newAccessToken);
+    await saveAccessToken(newAccessToken);
     await saveRefreshToken(newRefreshToken);
 
     return newAccessToken;
   };
 
   const sendRequest = async (token: string | null): Promise<ApiResponse<T>> => {
-    const response = await fetch(`${BASE_URLS[base]}${endpoint}`, {
-      ...options,
-      headers: {
-        ...options.headers,
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const response = await fetch(`${BASE_URLS[base]}${endpoint}`, {
+        ...options,
+        headers: {
+          ...options.headers,
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    if (response.status === 401) {
-      const newAccessToken = await refreshAccessToken();
-      return sendRequest(newAccessToken);
+      if (response.status === 401) {
+        console.log("Access token expired. Attempting to refresh...");
+        const newAccessToken = await refreshAccessToken();
+        return sendRequest(newAccessToken); // Retry the request
+      }
+
+      const data = await response.json();
+      return {
+        data,
+        status: response.status,
+      };
+    } catch (error) {
+      console.error("Error in API request:", error);
+      throw error;
     }
-    const data = await response.json();
-    return {
-      data,
-      status: response.status
-    };
   };
+
   return sendRequest(accessToken);
 };

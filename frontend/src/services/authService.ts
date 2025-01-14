@@ -1,4 +1,5 @@
 import * as SecureStorage from "expo-secure-store";
+import { saveAccessToken, saveRefreshToken, getRefreshToken } from "./secureStorage";
 
 const API_URL = "http://localhost:8080/api/auth";
 
@@ -54,3 +55,36 @@ export const registerUser = async (email: string, username: string, password: st
   }
 };
 
+export const refreshTokenFlow = async (): Promise<{ userId?: string }> => {
+  const storedRefreshToken = await getRefreshToken();
+
+  if (!storedRefreshToken) {
+    console.error("No refresh token found for refreshTokenFlow.");
+    return {};
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: storedRefreshToken }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to refresh tokens. Status:", response.status);
+      return {};
+    }
+
+    const { accessToken, refreshToken: newRefreshToken, userId } = await response.json();
+
+    // Save new tokens
+    await saveAccessToken(accessToken);
+    await saveRefreshToken(newRefreshToken);
+
+    console.log("Tokens refreshed successfully.");
+    return { userId };
+  } catch (error) {
+    console.error("Error refreshing tokens:", error);
+    return {};
+  }
+};
