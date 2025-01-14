@@ -6,10 +6,10 @@ import { loginUser } from '../services/authService'
 import { useAuth } from '../context/AuthContext'
 
 const LoginScreen = ({ navigation }: any) => {
-  const { setUser } = useAuth();
-  const [ email, setEmail ] = useState<string>("");
-  const [ password, setPassword ] = useState<string>("");
-  const [ errorMessage, setErrorMessage ] = useState<string | null>(null);
+  const { login } = useAuth(); // Use the login function from AuthContext
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -22,12 +22,16 @@ const LoginScreen = ({ navigation }: any) => {
       if (!response) {
         setErrorMessage("Email or password is invalid");
       } else {
+        const { accessToken, refreshToken, userId } = response;
+
+        await login(accessToken, refreshToken, userId);
+
         setErrorMessage(null);
-        setUser(response.userId);
-        navigation.navigate("Main", {screen: "View Posts"});
+        navigation.navigate("Main", { screen: "View Posts" });
       }
     } catch (error) {
-      console.error(error)
+      console.error("Login error:", error);
+      setErrorMessage("An unexpected error occurred. Please try again.");
     }
   };
 
