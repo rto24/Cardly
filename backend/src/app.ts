@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import postRoutes from "./routes/postRoutes";
+import serverRoutes from "./routes/serverRoutes";
 
 dotenv.config();
 
@@ -14,5 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
 app.use("/post", postRoutes);
+app.use("/server", serverRoutes);
 
 export default app;
