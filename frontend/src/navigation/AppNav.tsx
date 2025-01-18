@@ -7,6 +7,7 @@ import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import ViewPostsScreen from "../screens/ViewPostScreen";
 import CreatePostScreen from "../screens/CreatePostScreen";
+import ViewServersScreen from "../screens/ViewServersScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -33,6 +34,7 @@ const TabNav = ({ route }: any) => {
     >
       <Tab.Screen name="View Posts" component={ViewPostsScreen} />
       <Tab.Screen name="Create" component={CreatePostScreen} />
+      <Tab.Screen name="Servers" component={ViewServersScreen} />
     </Tab.Navigator>
   )
 }
@@ -59,6 +61,11 @@ const AppNav = () => {
         <Stack.Screen 
           name="Create"
           component={CreatePostScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="Servers"
+          component={ViewServersScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen 

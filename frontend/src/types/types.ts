@@ -57,3 +57,9 @@ export interface Posts {
   createdAt: string;
 }
 
+export interface Servers {
+  id: number;
+  name: string;
+  ownerId: number;
+  owner: User;
+}
