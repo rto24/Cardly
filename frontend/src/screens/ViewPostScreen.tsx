@@ -11,27 +11,23 @@ const ViewPostsScreen = ({ navigation }: any) => {
   const [ posts, setPosts ] = useState<Posts[]>([]);
 
   useEffect(() => {
-    console.log("Updated posts:", posts);
-  }, [posts]);
+    if (!user) {
+      console.warn("User is not authenticated. Redirecting to login.");
+      navigation.navigate("Login");
+      return;
+    };
 
-  useEffect(() => {
-  if (!user) {
-    console.warn("User is not authenticated. Redirecting to login.");
-    navigation.navigate("Login");
-    return;
-  }
-
-  const fetchUserPosts = async (userId: number) => {
-    try {
-      const data = await getUserPosts(userId);
-      setPosts(data);
-    } catch (error) {
-      console.error("Failure fetching user posts:", error);
-    }
-  };
-
-  fetchUserPosts(user);
-}, [user]);
+    const fetchUserPosts = async (userId: number) => {
+      try {
+        const data = await getUserPosts(userId);
+        setPosts(data);
+      } catch (error) {
+        console.error("Failure fetching user posts:", error);
+      }
+    };
+    
+    fetchUserPosts(user);
+  }, [user]);
 
   const handleComment = async (postId: number, userId: number, content: string): Promise<Comment> => {
     try {
