@@ -5,6 +5,7 @@ import { ApiResponse } from "../types/api";
 const BASE_URLS = {
   auth: "http://localhost:8080/api/auth",
   post: "http://localhost:8080/post",
+  server: "http://localhost:8080/server",
 };
 
 export const fetchWithAuth = async <T = any>(
