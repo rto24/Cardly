@@ -75,6 +75,8 @@ model Server {
   owner       User               @relation("ServerOwners", fields: [ownerId], references: [id])
   invitations ServerInvitation[]
   members     User[]             @relation("ServerMembers")
+  picture     String?            
+  tags        String[]           
 }
 
 model ServerInvitation {
