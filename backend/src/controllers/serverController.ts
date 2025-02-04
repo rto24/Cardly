@@ -2,11 +2,22 @@ import { Response, Request } from "express";
 import prisma from "../prisma/prisma";
 
 export const createServer = async (req: Request, res: Response): Promise<void> => {
-  const { name, ownerId } = req.body;
+  const { name, ownerId, picture, tags } = req.body;
 
   try {
     const newServer = await prisma.server.create({
-      data: { name, ownerId },
+      data: { 
+        name, 
+        ownerId, 
+        picture,
+        tags,
+        members: {
+          connect: { id: ownerId }
+        }
+      },
+      include: {
+        members: true
+      }
     });
 
     res.status(200).json({ message: "Server created successfully", server: newServer });
@@ -17,7 +28,24 @@ export const createServer = async (req: Request, res: Response): Promise<void> =
 
 export const getServers = async (req: Request, res: Response): Promise<void> => {
   try {
-    const servers = await prisma.server.findMany();
+    const servers = await prisma.server.findMany({
+      include: {
+        owner: {
+          select: {
+            id: true,
+            username: true,
+            avatar: true
+          }
+        },
+        members: {
+          select: {
+            id: true,
+            username: true,
+            avatar: true,
+          }
+        }
+      }
+    });
     res.status(200).json(servers);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving available serveres:", error });
