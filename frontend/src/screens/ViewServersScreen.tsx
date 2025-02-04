@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Servers } from "../types/types";
-import { View, Text } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { getServers } from "../services/serversService";
+import ServerCard from "../components/ServerCard";
 
 const ViewServersScreen = ({ navigation }: any) => {
   const [ servers, setServers ] = useState<Servers[]>([]);
@@ -9,6 +10,7 @@ const ViewServersScreen = ({ navigation }: any) => {
   useEffect(() => {
     const loadServers = async () => {
       const servers = await getServers();
+      console.log(servers)
       setServers(servers);
     }
     loadServers();
@@ -16,12 +18,20 @@ const ViewServersScreen = ({ navigation }: any) => {
 
   return (
     <View>
-      <Text>Join a Server</Text>
-      {servers.map((server, index) => (
-        <View key={index}>
-          <Text>{server.name}</Text>
-        </View>
-      ))}
+      <FlatList 
+        data={servers}
+        renderItem={({ item }) => (
+          <ServerCard 
+            id={item.id}
+            name={item.name}
+            owner={item.owner}
+            picture={item.picture}
+            members={item.members}
+            tags={item.tags}
+          />
+        )}
+        keyExtractor={(item) => item.id.toString()}
+      />
     </View>
   )
 }
