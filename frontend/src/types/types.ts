@@ -62,4 +62,7 @@ export interface Servers {
   name: string;
   ownerId: number;
   owner: User;
+  imageUrl: string;
+  tags: string[];
 }
+
