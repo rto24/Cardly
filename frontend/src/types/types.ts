@@ -60,9 +60,9 @@ export interface Posts {
 export interface Servers {
   id: number;
   name: string;
-  ownerId: number;
   owner: User;
-  imageUrl: string;
+  picture: string;
+  members: User[];
   tags: string[];
 }
 
